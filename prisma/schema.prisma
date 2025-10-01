@@ -14,17 +14,7 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
 
 // Necessary for Next auth
 model Account {
@@ -55,14 +45,57 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+  id            String    @id @default(cuid()) // UUID for security
+  email         String    @unique              // Primary identifier
+  emailVerified DateTime? // For email verification flow
+  name          String?   // From social providers
+  image         String?   // Profile picture URL
+  role          UserRole  @default(STUDENT)    // Access control
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Social Login Relations
+  accounts      Account[] // OAuth providers (Google, Facebook, etc.)
+  sessions      Session[] // Active login sessions
+
+  // Platform Relations
+  responses     Response[] // User's test answers
+  testSessions  TestSession[] // Test attempts
+  subscriptions Subscription? // Premium features
+  preferences   UserPreference? // User settings
+
+  @@map("users")
+}
+
+
+
+
+// Subscription Model (for Premium Features)
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan        String   // "FREE", "PREMIUM", "AD_FREE"
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean  @default(false)
+  paymentId   String?  // Payment gateway reference
+  autoRenew   Boolean  @default(true)
+
+  @@map("subscriptions")
+}
+model UserPreference {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  defaultSubject   String?  // e.g., "Physics"
+  defaultDifficulty String? // "Easy", "Medium", "Hard"
+  theme            String   @default("light") // UI theme
+  language         String   @default("en")    // UI language
+  notifications    Boolean  @default(true)    // Email notifications
+  adPersonalization Boolean @default(true)    // AdSense personalization
+
+  @@map("user_preferences")
 }
 
 model VerificationToken {
@@ -71,4 +104,36 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+// Access Control Enum
+enum UserRole {
+  STUDENT
+  ADMIN
+  MODERATOR
+}
+
+// Test Session Model (for tracking test attempts)
+model TestSession {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testId    String   // Assuming a test identifier, adjust as needed
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  score     Int?
+
+  @@map("test_sessions")
+}
+
+// Response Model (for user's answers to questions)
+model Response {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String   // Assuming a question identifier, adjust as needed
+  answer     String   // User's answer
+  isCorrect  Boolean?
+  createdAt  DateTime @default(now())
+
+  @@map("responses")
 }
