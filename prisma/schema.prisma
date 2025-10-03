@@ -2,138 +2,692 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  // For production, use PostgreSQL:
+  // provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
+// ============================================
+// AUTHENTICATION & USER MANAGEMENT
+// ============================================
 
-
-// Necessary for Next auth
 model Account {
-    id                       String  @id @default(cuid())
-    userId                   String
-    type                     String
-    provider                 String
-    providerAccountId        String
-    refresh_token            String? // @db.Text
-    access_token             String? // @db.Text
-    expires_at               Int?
-    token_type               String?
-    scope                    String?
-    id_token                 String? // @db.Text
-    session_state            String?
-    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    refresh_token_expires_in Int?
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refresh_token_expires_in Int?
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model User {
-  id            String    @id @default(cuid()) // UUID for security
-  email         String    @unique              // Primary identifier
-  emailVerified DateTime? // For email verification flow
-  name          String?   // From social providers
-  image         String?   // Profile picture URL
-  role          UserRole  @default(STUDENT)    // Access control
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  role          UserRole  @default(STUDENT)
+  phone         String?   // Required for Razorpay
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Social Login Relations
-  accounts      Account[] // OAuth providers (Google, Facebook, etc.)
-  sessions      Session[] // Active login sessions
-
-  // Platform Relations
-  responses     Response[] // User's test answers
-  testSessions  TestSession[] // Test attempts
-  subscriptions Subscription? // Premium features
-  preferences   UserPreference? // User settings
+  // Authentication Relations
+  accounts      Account[]
+  sessions      Session[]
+  
+  // Subscription & Payments
+  subscription  Subscription?
+  payments      Payment[]
+  orders        Order[]
+  
+  // User Settings
+  preferences   UserPreference?
+  
+  // Student Relations
+  testAttempts  TestAttempt[]
+  studentAnswers StudentAnswer[]
+  aiHints       AIHint[]
+  aiReports     AIReport[]
+  enrollments   OrganizationStudent[]
+  
+  // Organization Relations
+  organization  Organization?
+  createdTests  Test[]
 
   @@map("users")
 }
 
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
 
+enum UserRole {
+  STUDENT       // Regular students
+  ORGANIZATION  // Coaching centers
+  ADMIN         // Platform admins
+  MODERATOR     // Content moderators
+}
 
-// Subscription Model (for Premium Features)
+// ============================================
+// SUBSCRIPTION & RAZORPAY PAYMENTS
+// ============================================
+
 model Subscription {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan        String   // "FREE", "PREMIUM", "AD_FREE"
+  id          String           @id @default(cuid())
+  userId      String           @unique
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan        SubscriptionPlan
+  status      SubscriptionStatus @default(INACTIVE)
+  
+  // Subscription Period
   startDate   DateTime
   endDate     DateTime?
-  isActive    Boolean  @default(false)
-  paymentId   String?  // Payment gateway reference
-  autoRenew   Boolean  @default(true)
+  
+  // Razorpay Details
+  razorpaySubscriptionId String? @unique
+  
+  // Payment Info
+  amount      Int              // In paise (₹100 = 10000 paise)
+  currency    String           @default("INR")
+  autoRenew   Boolean          @default(false)
+  
+  // Metadata
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  cancelledAt DateTime?
+  
+  // Relations
+  payments    Payment[]
 
   @@map("subscriptions")
 }
+
+enum SubscriptionPlan {
+  FREE          // With ads - ₹0
+  AD_FREE       // Student plan - ₹100
+  ORGANIZATION  // Coaching plan - ₹5000
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  EXPIRED
+  PENDING
+}
+
+model Order {
+  id                String       @id @default(cuid())
+  userId            String
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Razorpay Order Details
+  razorpayOrderId   String       @unique
+  amount            Int          // In paise
+  currency          String       @default("INR")
+  receipt           String       @unique // Your internal receipt number
+  
+  // Order Info
+  plan              SubscriptionPlan
+  status            OrderStatus  @default(CREATED)
+  
+  // Additional Details
+  notes             String?      // JSON string for additional data
+  
+  // Timestamps
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  
+  // Relations
+  payment           Payment?
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  CREATED    // Order created, payment pending
+  ATTEMPTED  // Payment attempted
+  PAID       // Payment successful
+  FAILED     // Payment failed
+  EXPIRED    // Order expired
+}
+
+model Payment {
+  id                  String        @id @default(cuid())
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptionId      String?
+  subscription        Subscription? @relation(fields: [subscriptionId], references: [id])
+  orderId             String        @unique
+  order               Order         @relation(fields: [orderId], references: [id])
+  
+  // Razorpay Payment Details
+  razorpayPaymentId   String?       @unique
+  razorpayOrderId     String
+  razorpaySignature   String?
+  
+  // Payment Info
+  amount              Int           // In paise
+  currency            String        @default("INR")
+  status              PaymentStatus @default(PENDING)
+  method              String?       // card, netbanking, wallet, upi
+  
+  // Card/Bank Details (if applicable)
+  cardId              String?
+  bank                String?
+  wallet              String?
+  vpa                 String?       // UPI ID
+  email               String?
+  contact             String?
+  
+  // Error Handling
+  errorCode           String?
+  errorDescription    String?
+  errorSource         String?
+  errorReason         String?
+  
+  // Timestamps
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  capturedAt          DateTime?
+  
+  // Metadata
+  notes               String?       // JSON string
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING    // Payment initiated
+  AUTHORIZED // Payment authorized (need to capture)
+  CAPTURED   // Payment successful
+  FAILED     // Payment failed
+  REFUNDED   // Payment refunded
+  PARTIAL_REFUND // Partially refunded
+}
+
+model Refund {
+  id                String   @id @default(cuid())
+  razorpayRefundId  String   @unique
+  razorpayPaymentId String
+  amount            Int      // In paise
+  currency          String   @default("INR")
+  status            String   // processed, failed
+  reason            String?
+  notes             String?
+  createdAt         DateTime @default(now())
+
+  @@map("refunds")
+}
+
 model UserPreference {
-  id               String   @id @default(cuid())
-  userId           String   @unique
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  defaultSubject   String?  // e.g., "Physics"
-  defaultDifficulty String? // "Easy", "Medium", "Hard"
-  theme            String   @default("light") // UI theme
-  language         String   @default("en")    // UI language
-  notifications    Boolean  @default(true)    // Email notifications
-  adPersonalization Boolean @default(true)    // AdSense personalization
+  id                String  @id @default(cuid())
+  userId            String  @unique
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Default Test Settings
+  defaultSubject    String?
+  defaultDifficulty Difficulty? @default(MEDIUM)
+  
+  // UI Settings
+  theme             String  @default("light")
+  language          String  @default("en")
+  
+  // Notification Settings
+  notifications     Boolean @default(true)
+  emailNotifications Boolean @default(true)
+  
+  // Privacy Settings
+  adPersonalization Boolean @default(true)
 
   @@map("user_preferences")
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+// ============================================
+// ORGANIZATION (COACHING CENTERS)
+// ============================================
 
-    @@unique([identifier, token])
+model Organization {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Organization Details
+  name        String
+  subdomain   String   @unique // e.g., "allen" -> allen.yourplatform.com
+  logo        String?
+  tagline     String?
+  
+  // Contact Information
+  address     String?
+  city        String?
+  state       String?
+  pincode     String?
+  phone       String?
+  email       String?
+  website     String?
+  
+  // Settings
+  isActive    Boolean  @default(true)
+  isVerified  Boolean  @default(false)
+  
+  // Branding
+  primaryColor String? @default("#000000")
+  secondaryColor String? @default("#ffffff")
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  students    OrganizationStudent[]
+  tests       Test[]
+
+  @@map("organizations")
 }
-// Access Control Enum
-enum UserRole {
-  STUDENT
-  ADMIN
-  MODERATOR
+
+model OrganizationStudent {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  studentId      String
+  student        User         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  // Enrollment Details
+  enrollmentDate DateTime     @default(now())
+  enrollmentCode String?      // Unique code for student
+  batch          String?      // Batch/Class identifier
+  rollNumber     String?
+  
+  // Status
+  isActive       Boolean      @default(true)
+  
+  // Timestamps
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  @@unique([organizationId, studentId])
+  @@map("organization_students")
 }
 
-// Test Session Model (for tracking test attempts)
-model TestSession {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  testId    String   // Assuming a test identifier, adjust as needed
-  startedAt DateTime @default(now())
-  endedAt   DateTime?
-  score     Int?
+// ============================================
+// CONTENT STRUCTURE
+// ============================================
 
-  @@map("test_sessions")
+model Subject {
+  id          String    @id @default(cuid())
+  name        String    @unique // "Physics", "Chemistry", "Mathematics"
+  code        String    @unique // "PHY", "CHEM", "MATH"
+  description String?
+  icon        String?
+  color       String?   // Hex color for UI
+  order       Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  chapters    Chapter[]
+  questions   Question[]
+
+  @@map("subjects")
 }
 
-// Response Model (for user's answers to questions)
-model Response {
-  id         Int      @id @default(autoincrement())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  questionId String   // Assuming a question identifier, adjust as needed
-  answer     String   // User's answer
-  isCorrect  Boolean?
+model Chapter {
+  id          String    @id @default(cuid())
+  subjectId   String
+  subject     Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  
+  // Chapter Details
+  name        String    // "Mechanics", "Thermodynamics"
+  code        String    // "PHY-01", "PHY-02"
+  description String?
+  order       Int       @default(0)
+  
+  // Status
+  isActive    Boolean   @default(true)
+  
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  questions      Question[]
+  testChapters   TestChapter[]
+
+  @@unique([subjectId, code])
+  @@map("chapters")
+}
+
+// ============================================
+// QUESTIONS
+// ============================================
+
+model Question {
+  id              String     @id @default(cuid())
+  subjectId       String
+  subject         Subject    @relation(fields: [subjectId], references: [id])
+  chapterId       String
+  chapter         Chapter    @relation(fields: [chapterId], references: [id])
+  
+  // Question Content
+  questionText    String     // Main question text
+  questionImage   String?    // Optional image URL
+  option1         String
+  option1Image    String?
+  option2         String
+  option2Image    String?
+  option3         String
+  option3Image    String?
+  option4         String
+  option4Image    String?
+  correctOption   Int        // 1, 2, 3, or 4
+  
+  // Explanation
+  explanation     String?    // Detailed solution
+  explanationImage String?   // Optional image for explanation
+  
+  // Difficulty & Scoring
+  difficulty      Difficulty @default(MEDIUM)
+  marks           Int        @default(4)
+  negativeMarks   Float      @default(1)
+  
+  // AI Features
+  aiHintPrompt    String?    // Custom prompt for generating hints
+  
+  // Tags & Metadata
+  tags            String?    // JSON array of tags
+  
+  // Status
+  isActive        Boolean    @default(true)
+  isVerified      Boolean    @default(false)
+  
+  // Timestamps
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  testQuestions   TestQuestion[]
+  studentAnswers  StudentAnswer[]
+
+  @@map("questions")
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+// ============================================
+// TESTS
+// ============================================
+
+model Test {
+  id             String       @id @default(cuid())
+  title          String
+  description    String?
+  instructions   String?      // Test instructions
+  
+  // Creator Information
+  createdBy      String
+  creator        User         @relation(fields: [createdBy], references: [id])
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  
+  // Test Configuration
+  duration       Int          // In minutes
+  totalMarks     Int
+  passingMarks   Int?
+  totalQuestions Int          @default(0)
+  
+  // Access Control
+  isPublic       Boolean      @default(false)
+  isPaid         Boolean      @default(false)
+  requiresSubscription Boolean @default(false)
+  
+  // AI Features
+  allowAIHints   Boolean      @default(true)
+  maxAIHints     Int          @default(3)
+  
+  // Test Settings
+  shuffleQuestions Boolean    @default(false)
+  shuffleOptions Boolean      @default(false)
+  showResults    Boolean      @default(true)
+  showAnswers    Boolean      @default(true)
+  
+  // Scheduling
+  startDate      DateTime?
+  endDate        DateTime?
+  
+  // Status
+  isActive       Boolean      @default(true)
+  isPublished    Boolean      @default(false)
+  
+  // Timestamps
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  testQuestions  TestQuestion[]
+  testChapters   TestChapter[]
+  testAttempts   TestAttempt[]
+  assignments    TestAssignment[]
+
+  @@map("tests")
+}
+
+model TestChapter {
+  id            String  @id @default(cuid())
+  testId        String
+  test          Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  chapterId     String
+  chapter       Chapter @relation(fields: [chapterId], references: [id])
+  questionCount Int     // Questions to pick from this chapter
+
+  @@unique([testId, chapterId])
+  @@map("test_chapters")
+}
+
+model TestQuestion {
+  id         String   @id @default(cuid())
+  testId     String
+  test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+  order      Int      // Display order
   createdAt  DateTime @default(now())
 
-  @@map("responses")
+  @@unique([testId, questionId])
+  @@map("test_questions")
+}
+
+model TestAssignment {
+  id             String    @id @default(cuid())
+  testId         String
+  test           Test      @relation(fields: [testId], references: [id], onDelete: Cascade)
+  organizationId String    // Which coaching assigned this
+  assignedTo     String?   // Specific student ID (null = all students)
+  assignedAt     DateTime  @default(now())
+  dueDate        DateTime?
+  isActive       Boolean   @default(true)
+  
+  // Notification
+  notificationSent Boolean @default(false)
+
+  @@map("test_assignments")
+}
+
+// ============================================
+// TEST ATTEMPTS & ANSWERS
+// ============================================
+
+model TestAttempt {
+  id              String        @id @default(cuid())
+  testId          String
+  test            Test          @relation(fields: [testId], references: [id])
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Attempt Details
+  startedAt       DateTime      @default(now())
+  submittedAt     DateTime?
+  timeSpent       Int           @default(0) // In seconds
+  status          AttemptStatus @default(IN_PROGRESS)
+  
+  // Scoring
+  totalQuestions  Int
+  attempted       Int           @default(0)
+  correct         Int           @default(0)
+  incorrect       Int           @default(0)
+  unanswered      Int           @default(0)
+  score           Float         @default(0)
+  percentage      Float         @default(0)
+  rank            Int?          // Rank among all attempts
+  
+  // AI Features
+  aiHintsUsed     Int           @default(0)
+  aiReportGenerated Boolean     @default(false)
+  
+  // Metadata
+  ipAddress       String?
+  userAgent       String?
+  
+  // Timestamps
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  answers         StudentAnswer[]
+  aiHints         AIHint[]
+  aiReport        AIReport?
+
+  @@map("test_attempts")
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  EVALUATED
+  ABANDONED
+}
+
+model StudentAnswer {
+  id              String      @id @default(cuid())
+  attemptId       String
+  attempt         TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId      String
+  question        Question    @relation(fields: [questionId], references: [id])
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Answer Details
+  selectedOption  Int?        // 1, 2, 3, or 4 (null = not attempted)
+  isCorrect       Boolean?
+  timeTaken       Int?        // In seconds
+  marksAwarded    Float       @default(0)
+  
+  // Metadata
+  isMarkedForReview Boolean   @default(false)
+  
+  // Timestamp
+  answeredAt      DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@unique([attemptId, questionId])
+  @@map("student_answers")
+}
+
+// ============================================
+// AI FEATURES
+// ============================================
+
+model AIHint {
+  id          String      @id @default(cuid())
+  attemptId   String
+  attempt     TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId  String
+  
+  // Hint Content
+  hintText    String      // AI-generated hint
+  hintType    String      @default("conceptual") // conceptual, procedural, strategic
+  
+  // Metadata
+  requestedAt DateTime    @default(now())
+  aiModel     String      @default("claude-4.5-sonnet")
+  promptUsed  String?     // The actual prompt sent to AI
+
+  @@map("ai_hints")
+}
+
+model AIReport {
+  id          String      @id @default(cuid())
+  attemptId   String      @unique
+  attempt     TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Report Content
+  overallSummary  String  // JSON: Overall performance analysis
+  subjectWise     String  // JSON: Subject-wise breakdown
+  strengthAreas   String  // JSON: Strong topics
+  weaknessAreas   String  // JSON: Areas needing improvement
+  timeManagement  String  // JSON: Time analysis
+  recommendations String  // JSON: Personalized study plan
+  comparisonData  String? // JSON: Compare with other students
+  
+  // Metadata
+  generatedAt DateTime    @default(now())
+  aiModel     String      @default("claude-4.5-sonnet")
+  processingTime Int?     // In milliseconds
+
+  @@map("ai_reports")
+}
+
+// ============================================
+// ANALYTICS & TRACKING (Optional but Recommended)
+// ============================================
+
+model QuestionAnalytics {
+  id              String   @id @default(cuid())
+  questionId      String   @unique
+  timesAttempted  Int      @default(0)
+  timesCorrect    Int      @default(0)
+  timesIncorrect  Int      @default(0)
+  timesSkipped    Int      @default(0)
+  avgTimeTaken    Float    @default(0)
+  accuracyRate    Float    @default(0)
+  updatedAt       DateTime @updatedAt
+
+  @@map("question_analytics")
 }

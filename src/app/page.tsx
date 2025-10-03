@@ -27,14 +27,14 @@ import {
   BarChart3,
   User,
 } from "lucide-react";
-
+import { api } from "@/trpc/server";
 // Helper function to get initials from name
 const getInitials = (name: string) => {
   const names = name.trim().split(" ");
-  if (names.length === 1) return names[0].charAt(0).toUpperCase();
+  if (names.length === 1) return names[0]?.charAt(0).toUpperCase() || "U";
   return (
-    names[0].charAt(0).toUpperCase() +
-    names[names.length - 1].charAt(0).toUpperCase()
+    (names[0]?.charAt(0).toUpperCase() || "U") +
+    (names[names.length - 1]?.charAt(0).toUpperCase() || "")
   );
 };
 
@@ -60,6 +60,8 @@ const getNameColor = (name: string) => {
 
 export default async function Home() {
   const session = await auth();
+  const data = await api.post.hello({ text: "from tRPC" });
+  console.log("tRPC data:", data);
   console.log("User session:", session);
   return (
     <HydrateClient>

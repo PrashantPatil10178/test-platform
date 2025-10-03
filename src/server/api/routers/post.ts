@@ -35,7 +35,10 @@ export const postRouter = createTRPCRouter({
     return post ?? null;
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+  getSecretMessage: protectedProcedure.query(async ({ ctx }) => {
+    const userID = await ctx.db.user.findFirst({
+      where: { id: ctx.session.user.id },
+    });
+    return "you can now see this secret message! " + userID?.role;
   }),
 });

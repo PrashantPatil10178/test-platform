@@ -1,5 +1,9 @@
-
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
+import z from "zod";
 
 export const dashboardRouter = createTRPCRouter({
   getStats: publicProcedure.query(() => {
@@ -9,4 +13,17 @@ export const dashboardRouter = createTRPCRouter({
       testsCompleted: 789,
     };
   }),
+  editStats: protectedProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+        views: z.number().optional(),
+        likes: z.number().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      console.log("Input received:", input);
+
+      return "Stats updated successfully";
+    }),
 });
