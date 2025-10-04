@@ -1,5 +1,11 @@
-import { postRouter } from "@/server/api/routers/post";
 import { dashboardRouter } from "@/server/api/routers/dashboard";
+import { userRouter } from "@/server/api/routers/user";
+import { subscriptionRouter } from "@/server/api/routers/subscription";
+import { paymentRouter } from "@/server/api/routers/payment";
+import { organizationRouter } from "@/server/api/routers/organization";
+import { testRouter } from "@/server/api/routers/test";
+import { questionRouter } from "@/server/api/routers/question";
+import { analyticsRouter } from "@/server/api/routers/analytics";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -8,8 +14,14 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
   dashboard: dashboardRouter,
+  user: userRouter,
+  subscription: subscriptionRouter,
+  payment: paymentRouter,
+  organization: organizationRouter,
+  test: testRouter,
+  question: questionRouter,
+  analytics: analyticsRouter,
 });
 
 // export type definition of API

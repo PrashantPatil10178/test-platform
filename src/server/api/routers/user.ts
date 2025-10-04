@@ -1,41 +1,40 @@
-
+import bcrypt from "bcryptjs";
 import { z } from "zod";
 
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from "~/server/api/trpc";
+} from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.db.user.findMany();
   }),
 
-  getById: publicProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
-    return ctx.db.user.findUnique({
-      where: { id: input.id },
-    });
-  }),
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.user.findUnique({
+        where: { id: input.id },
+      });
+    }),
 
-  create: protectedProcedure
+  create: publicProcedure
     .input(
       z.object({
         email: z.string().email(),
         name: z.string().optional(),
-        image: z.string().optional(),
-        role: z.enum(["STUDENT", "ORGANIZATION", "ADMIN", "MODERATOR"]).default("STUDENT"),
-        phone: z.string().optional(),
+        password: z.string().min(6),
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const hashedPassword = await bcrypt.hash(input.password, 10);
       return ctx.db.user.create({
         data: {
           email: input.email,
           name: input.name,
-          image: input.image,
-          role: input.role,
-          phone: input.phone,
+          password: hashedPassword,
         },
       });
     }),
@@ -47,7 +46,9 @@ export const userRouter = createTRPCRouter({
         email: z.string().email().optional(),
         name: z.string().optional(),
         image: z.string().optional(),
-        role: z.enum(["STUDENT", "ORGANIZATION", "ADMIN", "MODERATOR"]).optional(),
+        role: z
+          .enum(["STUDENT", "ORGANIZATION", "ADMIN", "MODERATOR"])
+          .optional(),
         phone: z.string().optional(),
       }),
     )
@@ -59,9 +60,11 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-    delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-        return ctx.db.user.delete({
-            where: { id: input.id },
-        });
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.delete({
+        where: { id: input.id },
+      });
     }),
 });

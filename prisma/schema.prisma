@@ -7,8 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  // For production, use PostgreSQL:
-  // provider = "postgresql"
+  
   url      = env("DATABASE_URL")
 }
 
@@ -52,6 +51,7 @@ model User {
   emailVerified DateTime?
   name          String?
   image         String?
+  password      String?
   role          UserRole  @default(STUDENT)
   phone         String?   // Required for Razorpay
   createdAt     DateTime  @default(now())
