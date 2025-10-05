@@ -52,20 +52,14 @@ export const company = {
   plan: "Enterprise",
 };
 
-const tenants = [
-  { id: "1", name: "Acme Inc" },
-  { id: "2", name: "Beta Corp" },
-  { id: "3", name: "Gamma Ltd" },
-];
+const tenants = [{ id: "1", name: "Acme Inc" }];
 
 export default function AppSidebar() {
   const pathname = usePathname();
   const { isOpen } = useMediaQuery();
   const { data: session } = useSession();
   const router = useRouter();
-  const handleSwitchTenant = (_tenantId: string) => {
-    // Tenant switching functionality would be implemented here
-  };
+  const handleSwitchTenant = (_tenantId: string) => {};
 
   const activeTenant = tenants[0] || { id: "1", name: "Default Tenant" };
 
