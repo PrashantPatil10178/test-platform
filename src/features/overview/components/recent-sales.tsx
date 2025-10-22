@@ -1,70 +1,99 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
   CardHeader,
   CardContent,
   CardTitle,
-  CardDescription
-} from '@/components/ui/card';
+  CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-const salesData = [
+const recentTestAttempts = [
   {
-    name: 'Olivia Martin',
-    email: 'olivia.martin@email.com',
-    avatar: 'https://api.slingacademy.com/public/sample-users/1.png',
-    fallback: 'OM',
-    amount: '+$1,999.00'
+    name: "Rahul Sharma",
+    email: "rahul.sharma@email.com",
+    avatar: "https://api.slingacademy.com/public/sample-users/1.png",
+    fallback: "RS",
+    testName: "Physics Ch.1-5",
+    score: "87%",
+    status: "completed",
   },
   {
-    name: 'Jackson Lee',
-    email: 'jackson.lee@email.com',
-    avatar: 'https://api.slingacademy.com/public/sample-users/2.png',
-    fallback: 'JL',
-    amount: '+$39.00'
+    name: "Priya Patel",
+    email: "priya.patel@email.com",
+    avatar: "https://api.slingacademy.com/public/sample-users/2.png",
+    fallback: "PP",
+    testName: "Chemistry Full",
+    score: "92%",
+    status: "completed",
   },
   {
-    name: 'Isabella Nguyen',
-    email: 'isabella.nguyen@email.com',
-    avatar: 'https://api.slingacademy.com/public/sample-users/3.png',
-    fallback: 'IN',
-    amount: '+$299.00'
+    name: "Arjun Kumar",
+    email: "arjun.kumar@email.com",
+    avatar: "https://api.slingacademy.com/public/sample-users/3.png",
+    fallback: "AK",
+    testName: "Math Practice",
+    score: "78%",
+    status: "completed",
   },
   {
-    name: 'William Kim',
-    email: 'will@email.com',
-    avatar: 'https://api.slingacademy.com/public/sample-users/4.png',
-    fallback: 'WK',
-    amount: '+$99.00'
+    name: "Sneha Reddy",
+    email: "sneha.reddy@email.com",
+    avatar: "https://api.slingacademy.com/public/sample-users/4.png",
+    fallback: "SR",
+    testName: "MHT CET Mock",
+    score: "85%",
+    status: "completed",
   },
   {
-    name: 'Sofia Davis',
-    email: 'sofia.davis@email.com',
-    avatar: 'https://api.slingacademy.com/public/sample-users/5.png',
-    fallback: 'SD',
-    amount: '+$39.00'
-  }
+    name: "Vikram Singh",
+    email: "vikram.singh@email.com",
+    avatar: "https://api.slingacademy.com/public/sample-users/5.png",
+    fallback: "VS",
+    testName: "Physics Mock",
+    score: "74%",
+    status: "completed",
+  },
 ];
 
 export function RecentSales() {
   return (
-    <Card className='h-full'>
+    <Card className="h-full">
       <CardHeader>
-        <CardTitle>Recent Sales</CardTitle>
-        <CardDescription>You made 265 sales this month.</CardDescription>
+        <CardTitle>Recent Test Attempts</CardTitle>
+        <CardDescription>
+          Latest test submissions from students.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='space-y-8'>
-          {salesData.map((sale, index) => (
-            <div key={index} className='flex items-center'>
-              <Avatar className='h-9 w-9'>
-                <AvatarImage src={sale.avatar} alt='Avatar' />
-                <AvatarFallback>{sale.fallback}</AvatarFallback>
+        <div className="space-y-8">
+          {recentTestAttempts.map((attempt, index) => (
+            <div key={index} className="flex items-center">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src={attempt.avatar} alt="Avatar" />
+                <AvatarFallback>{attempt.fallback}</AvatarFallback>
               </Avatar>
-              <div className='ml-4 space-y-1'>
-                <p className='text-sm leading-none font-medium'>{sale.name}</p>
-                <p className='text-muted-foreground text-sm'>{sale.email}</p>
+              <div className="ml-4 space-y-1">
+                <p className="text-sm leading-none font-medium">
+                  {attempt.name}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {attempt.testName}
+                </p>
               </div>
-              <div className='ml-auto font-medium'>{sale.amount}</div>
+              <div className="ml-auto">
+                <Badge
+                  variant={
+                    parseInt(attempt.score) >= 85
+                      ? "default"
+                      : parseInt(attempt.score) >= 70
+                        ? "secondary"
+                        : "outline"
+                  }
+                >
+                  {attempt.score}
+                </Badge>
+              </div>
             </div>
           ))}
         </div>

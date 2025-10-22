@@ -22,19 +22,50 @@ export const navItems: NavItem[] = [
     items: [], // Empty array as there are no child items for Dashboard
   },
   {
-    title: "Product",
-    url: "/dashboard/product",
-    icon: "product",
-    shortcut: ["p", "p"],
+    title: "Tests",
+    url: "/dashboard/test",
+    icon: "fileText",
+    shortcut: ["t", "t"],
+    isActive: false,
+    items: [], // No child items
+  },
+  {
+    title: "Questions",
+    url: "/dashboard/questions",
+    icon: "circleDot",
+    shortcut: ["q", "q"],
+    isActive: false,
+    items: [], // No child items
+  },
+  {
+    title: "Students",
+    url: "/dashboard/students",
+    icon: "users",
+    shortcut: ["s", "s"],
+    isActive: false,
+    items: [], // No child items
+  },
+  {
+    title: "Analytics",
+    url: "/dashboard/analytics",
+    icon: "barChart",
+    shortcut: ["a", "a"],
+    isActive: false,
+    items: [], // No child items
+  },
+  {
+    title: "Subscriptions",
+    url: "/dashboard/subscriptions",
+    icon: "billing",
+    shortcut: ["u", "u"],
     isActive: false,
     items: [], // No child items
   },
   {
     title: "Account",
     url: "#", // Placeholder as there is no direct link for the parent
-    icon: "billing",
+    icon: "user",
     isActive: true,
-
     items: [
       {
         title: "Profile",
@@ -43,33 +74,12 @@ export const navItems: NavItem[] = [
         shortcut: ["m", "m"],
       },
       {
-        title: "Login",
-        shortcut: ["l", "l"],
-        url: "/",
-        icon: "login",
+        title: "Settings",
+        shortcut: ["e", "e"],
+        url: "/dashboard/settings",
+        icon: "settings",
       },
     ],
-  },
-  {
-    title: "Kanban",
-    url: "/dashboard/kanban",
-    icon: "kanban",
-    shortcut: ["k", "k"],
-    isActive: true,
-    items: [
-      {
-        title: "Profile",
-        url: "/dashboard/profile",
-        icon: "userPen",
-        shortcut: ["m", "m"],
-      },
-      {
-        title: "Login",
-        shortcut: ["l", "l"],
-        url: "/",
-        icon: "login",
-      },
-    ], // No child items
   },
 ];
 

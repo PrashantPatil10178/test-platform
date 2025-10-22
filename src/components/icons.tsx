@@ -14,7 +14,6 @@ import {
   IconLayoutDashboard,
   IconLoader2,
   IconLogin,
-  IconProps,
   IconShoppingBag,
   IconMoon,
   IconDotsVertical,
@@ -30,8 +29,12 @@ import {
   IconUserX,
   IconX,
   IconLayoutKanban,
-  IconBrandGithub
-} from '@tabler/icons-react';
+  IconBrandGithub,
+  IconUsers,
+  IconChartBar,
+  IconCircleDot,
+} from "@tabler/icons-react";
+import type { IconProps } from "@tabler/icons-react";
 
 export type Icon = React.ComponentType<IconProps>;
 
@@ -66,5 +69,9 @@ export const Icons = {
   laptop: IconDeviceLaptop,
   github: IconBrandGithub,
   twitter: IconBrandTwitter,
-  check: IconCheck
+  check: IconCheck,
+  fileText: IconFileText,
+  circleDot: IconCircleDot,
+  users: IconUsers,
+  barChart: IconChartBar,
 };

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { IconTrendingUp } from '@tabler/icons-react';
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+import { IconTrendingUp } from "@tabler/icons-react";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
   Card,
@@ -9,88 +9,88 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+  CardTitle,
+} from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
-} from '@/components/ui/chart';
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import type { ChartConfig } from "@/components/ui/chart";
 
 const chartData = [
-  { month: 'January', desktop: 186, mobile: 80 },
-  { month: 'February', desktop: 305, mobile: 200 },
-  { month: 'March', desktop: 237, mobile: 120 },
-  { month: 'April', desktop: 73, mobile: 190 },
-  { month: 'May', desktop: 209, mobile: 130 },
-  { month: 'June', desktop: 214, mobile: 140 }
+  { month: "May", completed: 186, inProgress: 45 },
+  { month: "June", completed: 305, inProgress: 62 },
+  { month: "July", completed: 237, inProgress: 58 },
+  { month: "August", completed: 273, inProgress: 72 },
+  { month: "September", completed: 309, inProgress: 68 },
+  { month: "October", completed: 384, inProgress: 85 },
 ];
 
 const chartConfig = {
-  visitors: {
-    label: 'Visitors'
+  tests: {
+    label: "Test Attempts",
   },
-  desktop: {
-    label: 'Desktop',
-    color: 'var(--primary)'
+  completed: {
+    label: "Completed",
+    color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: 'Mobile',
-    color: 'var(--primary)'
-  }
+  inProgress: {
+    label: "In Progress",
+    color: "hsl(var(--chart-2))",
+  },
 } satisfies ChartConfig;
 
 export function AreaGraph() {
   return (
-    <Card className='@container/card'>
+    <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Area Chart - Stacked</CardTitle>
+        <CardTitle>Test Attempts Over Time</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing completed and in-progress tests for the last 6 months
         </CardDescription>
       </CardHeader>
-      <CardContent className='px-2 pt-4 sm:px-6 sm:pt-6'>
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className='aspect-auto h-[250px] w-full'
+          className="aspect-auto h-[250px] w-full"
         >
           <AreaChart
             data={chartData}
             margin={{
               left: 12,
-              right: 12
+              right: 12,
             }}
           >
             <defs>
-              <linearGradient id='fillDesktop' x1='0' y1='0' x2='0' y2='1'>
+              <linearGradient id="fillCompleted" x1="0" y1="0" x2="0" y2="1">
                 <stop
-                  offset='5%'
-                  stopColor='var(--color-desktop)'
+                  offset="5%"
+                  stopColor="var(--color-completed)"
                   stopOpacity={1.0}
                 />
                 <stop
-                  offset='95%'
-                  stopColor='var(--color-desktop)'
+                  offset="95%"
+                  stopColor="var(--color-completed)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id='fillMobile' x1='0' y1='0' x2='0' y2='1'>
+              <linearGradient id="fillInProgress" x1="0" y1="0" x2="0" y2="1">
                 <stop
-                  offset='5%'
-                  stopColor='var(--color-mobile)'
+                  offset="5%"
+                  stopColor="var(--color-inProgress)"
                   stopOpacity={0.8}
                 />
                 <stop
-                  offset='95%'
-                  stopColor='var(--color-mobile)'
+                  offset="95%"
+                  stopColor="var(--color-inProgress)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='month'
+              dataKey="month"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -99,34 +99,34 @@ export function AreaGraph() {
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator='dot' />}
+              content={<ChartTooltipContent indicator="dot" />}
             />
             <Area
-              dataKey='mobile'
-              type='natural'
-              fill='url(#fillMobile)'
-              stroke='var(--color-mobile)'
-              stackId='a'
+              dataKey="inProgress"
+              type="natural"
+              fill="url(#fillInProgress)"
+              stroke="var(--color-inProgress)"
+              stackId="a"
             />
             <Area
-              dataKey='desktop'
-              type='natural'
-              fill='url(#fillDesktop)'
-              stroke='var(--color-desktop)'
-              stackId='a'
+              dataKey="completed"
+              type="natural"
+              fill="url(#fillCompleted)"
+              stroke="var(--color-completed)"
+              stackId="a"
             />
           </AreaChart>
         </ChartContainer>
       </CardContent>
       <CardFooter>
-        <div className='flex w-full items-start gap-2 text-sm'>
-          <div className='grid gap-2'>
-            <div className='flex items-center gap-2 leading-none font-medium'>
-              Trending up by 5.2% this month{' '}
-              <IconTrendingUp className='h-4 w-4' />
+        <div className="flex w-full items-start gap-2 text-sm">
+          <div className="grid gap-2">
+            <div className="flex items-center gap-2 leading-none font-medium">
+              Test completion trending up by 24% this month{" "}
+              <IconTrendingUp className="h-4 w-4" />
             </div>
-            <div className='text-muted-foreground flex items-center gap-2 leading-none'>
-              January - June 2024
+            <div className="text-muted-foreground flex items-center gap-2 leading-none">
+              May - October 2024
             </div>
           </div>
         </div>
