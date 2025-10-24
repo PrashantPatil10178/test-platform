@@ -33,6 +33,7 @@ import {
   IconUsers,
   IconChartBar,
   IconCircleDot,
+  IconClock,
 } from "@tabler/icons-react";
 import type { IconProps } from "@tabler/icons-react";
 
@@ -74,4 +75,5 @@ export const Icons = {
   circleDot: IconCircleDot,
   users: IconUsers,
   barChart: IconChartBar,
+  clock: IconClock,
 };

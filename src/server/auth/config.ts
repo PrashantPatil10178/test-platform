@@ -18,15 +18,13 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      role: "STUDENT" | "ORGANIZATION" | "ADMIN" | "MODERATOR";
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    role: "STUDENT" | "ORGANIZATION" | "ADMIN" | "MODERATOR";
+  }
 }
 
 /**
@@ -81,17 +79,19 @@ export const authConfig = {
           email: user.email,
           name: user.name,
           image: user.image,
+          role: user.role,
         };
       },
     }),
   ],
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db) as any,
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
       user: {
         ...session.user,
         id: user.id,
+        role: user.role,
       },
     }),
   },

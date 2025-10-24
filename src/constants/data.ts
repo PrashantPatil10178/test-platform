@@ -12,38 +12,31 @@ export type Product = {
 };
 
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
-export const navItems: NavItem[] = [
+// Student Navigation
+export const studentNavItems: NavItem[] = [
   {
     title: "Dashboard",
-    url: "/dashboard/overview",
+    url: "/dashboard/student",
     icon: "dashboard",
     isActive: false,
     shortcut: ["d", "d"],
-    items: [], // Empty array as there are no child items for Dashboard
+    items: [],
   },
   {
-    title: "Tests",
+    title: "Practice Tests",
     url: "/dashboard/test",
     icon: "fileText",
     shortcut: ["t", "t"],
     isActive: false,
-    items: [], // No child items
+    items: [],
   },
   {
-    title: "Questions",
-    url: "/dashboard/questions",
-    icon: "circleDot",
-    shortcut: ["q", "q"],
+    title: "Test History",
+    url: "/dashboard/history",
+    icon: "clock",
+    shortcut: ["h", "h"],
     isActive: false,
-    items: [], // No child items
-  },
-  {
-    title: "Students",
-    url: "/dashboard/students",
-    icon: "users",
-    shortcut: ["s", "s"],
-    isActive: false,
-    items: [], // No child items
+    items: [],
   },
   {
     title: "Analytics",
@@ -51,7 +44,7 @@ export const navItems: NavItem[] = [
     icon: "barChart",
     shortcut: ["a", "a"],
     isActive: false,
-    items: [], // No child items
+    items: [],
   },
   {
     title: "Subscriptions",
@@ -59,11 +52,11 @@ export const navItems: NavItem[] = [
     icon: "billing",
     shortcut: ["u", "u"],
     isActive: false,
-    items: [], // No child items
+    items: [],
   },
   {
     title: "Account",
-    url: "#", // Placeholder as there is no direct link for the parent
+    url: "#",
     icon: "user",
     isActive: true,
     items: [
@@ -82,6 +75,170 @@ export const navItems: NavItem[] = [
     ],
   },
 ];
+
+// Organization Navigation
+export const organizationNavItems: NavItem[] = [
+  {
+    title: "Dashboard",
+    url: "/dashboard/organization",
+    icon: "dashboard",
+    isActive: false,
+    shortcut: ["d", "d"],
+    items: [],
+  },
+  {
+    title: "Tests",
+    url: "/dashboard/test",
+    icon: "fileText",
+    shortcut: ["t", "t"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Questions",
+    url: "/dashboard/questions",
+    icon: "circleDot",
+    shortcut: ["q", "q"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Students",
+    url: "/dashboard/students",
+    icon: "users",
+    shortcut: ["s", "s"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Analytics",
+    url: "/dashboard/analytics",
+    icon: "barChart",
+    shortcut: ["a", "a"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Subscriptions",
+    url: "/dashboard/subscriptions",
+    icon: "billing",
+    shortcut: ["u", "u"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Account",
+    url: "#",
+    icon: "user",
+    isActive: true,
+    items: [
+      {
+        title: "Profile",
+        url: "/dashboard/profile",
+        icon: "userPen",
+        shortcut: ["m", "m"],
+      },
+      {
+        title: "Settings",
+        shortcut: ["e", "e"],
+        url: "/dashboard/settings",
+        icon: "settings",
+      },
+    ],
+  },
+];
+
+// Admin/Moderator Navigation
+export const adminNavItems: NavItem[] = [
+  {
+    title: "Dashboard",
+    url: "/dashboard/overview",
+    icon: "dashboard",
+    isActive: false,
+    shortcut: ["d", "d"],
+    items: [],
+  },
+  {
+    title: "Tests",
+    url: "/dashboard/test",
+    icon: "fileText",
+    shortcut: ["t", "t"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Questions",
+    url: "/dashboard/questions",
+    icon: "circleDot",
+    shortcut: ["q", "q"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Students",
+    url: "/dashboard/students",
+    icon: "users",
+    shortcut: ["s", "s"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Analytics",
+    url: "/dashboard/analytics",
+    icon: "barChart",
+    shortcut: ["a", "a"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Subscriptions",
+    url: "/dashboard/subscriptions",
+    icon: "billing",
+    shortcut: ["u", "u"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Account",
+    url: "#",
+    icon: "user",
+    isActive: true,
+    items: [
+      {
+        title: "Profile",
+        url: "/dashboard/profile",
+        icon: "userPen",
+        shortcut: ["m", "m"],
+      },
+      {
+        title: "Settings",
+        shortcut: ["e", "e"],
+        url: "/dashboard/settings",
+        icon: "settings",
+      },
+    ],
+  },
+];
+
+// Helper function to get navigation items based on role
+export function getNavItemsByRole(
+  role: "STUDENT" | "ORGANIZATION" | "ADMIN" | "MODERATOR",
+): NavItem[] {
+  switch (role) {
+    case "STUDENT":
+      return studentNavItems;
+    case "ORGANIZATION":
+      return organizationNavItems;
+    case "ADMIN":
+    case "MODERATOR":
+      return adminNavItems;
+    default:
+      return studentNavItems;
+  }
+}
+
+// Keep the old navItems for backward compatibility (defaults to admin)
+export const navItems: NavItem[] = adminNavItems;
 
 export interface SaleUser {
   id: number;

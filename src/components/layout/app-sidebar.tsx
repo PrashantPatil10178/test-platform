@@ -29,7 +29,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { UserAvatarProfile } from "@/components/user-avatar-profile";
-import { navItems } from "@/constants/data";
+import { getNavItemsByRole } from "@/constants/data";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useSession, signOut } from "next-auth/react";
 import {
@@ -62,6 +62,10 @@ export default function AppSidebar() {
   const handleSwitchTenant = (_tenantId: string) => {};
 
   const activeTenant = tenants[0] || { id: "1", name: "Default Tenant" };
+
+  // Get navigation items based on user role
+  const userRole = session?.user?.role || "STUDENT";
+  const navItems = React.useMemo(() => getNavItemsByRole(userRole), [userRole]);
 
   React.useEffect(() => {
     // Side effects based on sidebar state changes
