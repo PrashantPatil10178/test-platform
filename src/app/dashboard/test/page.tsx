@@ -8,7 +8,13 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Clock,
   CheckCircle,
@@ -185,8 +191,12 @@ const mhtCetQuestions: Question[] = [
 ];
 
 export default function MhtCetTestPage() {
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
-  const [markedForReview, setMarkedForReview] = useState<Record<number, boolean>>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Record<number, number>
+  >({});
+  const [markedForReview, setMarkedForReview] = useState<
+    Record<number, boolean>
+  >({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(90 * 60); // 90 minutes in seconds
@@ -213,7 +223,8 @@ export default function MhtCetTestPage() {
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
   const toggleFullScreen = () => {
@@ -225,9 +236,15 @@ export default function MhtCetTestPage() {
   };
 
   const currentQuestion = mhtCetQuestions[currentQuestionIndex];
-  const physicsQuestions = mhtCetQuestions.filter((q) => q.subject === "Physics");
-  const chemistryQuestions = mhtCetQuestions.filter((q) => q.subject === "Chemistry");
-  const mathematicsQuestions = mhtCetQuestions.filter((q) => q.subject === "Mathematics");
+  const physicsQuestions = mhtCetQuestions.filter(
+    (q) => q.subject === "Physics",
+  );
+  const chemistryQuestions = mhtCetQuestions.filter(
+    (q) => q.subject === "Chemistry",
+  );
+  const mathematicsQuestions = mhtCetQuestions.filter(
+    (q) => q.subject === "Mathematics",
+  );
 
   const handleAnswerSelect = (questionId: number, answerIndex: number) => {
     setSelectedAnswers((prev) => ({
@@ -326,7 +343,9 @@ export default function MhtCetTestPage() {
           {/* Score Card */}
           <Card className="mb-6 border-2 shadow-lg">
             <CardContent className="pt-6 text-center">
-              <div className="mb-4 text-6xl font-bold text-primary">{percentage}%</div>
+              <div className="text-primary mb-4 text-6xl font-bold">
+                {percentage}%
+              </div>
               <div className="mb-4 text-xl font-medium">
                 You scored {correct} out of {total}
               </div>
@@ -335,9 +354,15 @@ export default function MhtCetTestPage() {
               <div className="mb-6 grid grid-cols-3 gap-4">
                 <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
                   <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                    {mhtCetQuestions.filter((q) => selectedAnswers[q.id] === q.correctAnswer).length}
+                    {
+                      mhtCetQuestions.filter(
+                        (q) => selectedAnswers[q.id] === q.correctAnswer,
+                      ).length
+                    }
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Correct</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    Correct
+                  </div>
                 </div>
                 <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
                   <div className="text-3xl font-bold text-red-600 dark:text-red-400">
@@ -345,17 +370,25 @@ export default function MhtCetTestPage() {
                       mhtCetQuestions.filter(
                         (q) =>
                           selectedAnswers[q.id] !== undefined &&
-                          selectedAnswers[q.id] !== q.correctAnswer
+                          selectedAnswers[q.id] !== q.correctAnswer,
                       ).length
                     }
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Incorrect</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    Incorrect
+                  </div>
                 </div>
                 <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-700/50">
                   <div className="text-3xl font-bold text-gray-600 dark:text-gray-300">
-                    {mhtCetQuestions.filter((q) => selectedAnswers[q.id] === undefined).length}
+                    {
+                      mhtCetQuestions.filter(
+                        (q) => selectedAnswers[q.id] === undefined,
+                      ).length
+                    }
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Unanswered</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    Unanswered
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -378,9 +411,14 @@ export default function MhtCetTestPage() {
                           </Badge>
                           <div className="flex-1">
                             <div className="mb-2 flex items-start gap-2">
-                              <span className="font-semibold">Q{question.id}.</span>
-                              <span className="flex-1">{question.question}</span>
-                              {selectedAnswers[question.id] === question.correctAnswer ? (
+                              <span className="font-semibold">
+                                Q{question.id}.
+                              </span>
+                              <span className="flex-1">
+                                {question.question}
+                              </span>
+                              {selectedAnswers[question.id] ===
+                              question.correctAnswer ? (
                                 <CheckCircle className="h-5 w-5 shrink-0 text-green-600" />
                               ) : (
                                 <XCircle className="h-5 w-5 shrink-0 text-red-600" />
@@ -398,19 +436,25 @@ export default function MhtCetTestPage() {
                                   "border-green-500 bg-green-50 text-green-900 dark:bg-green-900/20 dark:text-green-100",
                                 selectedAnswers[question.id] === index &&
                                   index !== question.correctAnswer &&
-                                  "border-red-500 bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-100"
+                                  "border-red-500 bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-100",
                               )}
                             >
                               <div className="flex items-center justify-between">
                                 <span>{option}</span>
                                 {index === question.correctAnswer && (
-                                  <Badge variant="default" className="ml-2 bg-green-600">
+                                  <Badge
+                                    variant="default"
+                                    className="ml-2 bg-green-600"
+                                  >
                                     Correct
                                   </Badge>
                                 )}
                                 {selectedAnswers[question.id] === index &&
                                   index !== question.correctAnswer && (
-                                    <Badge variant="destructive" className="ml-2">
+                                    <Badge
+                                      variant="destructive"
+                                      className="ml-2"
+                                    >
                                       Your Answer
                                     </Badge>
                                   )}
@@ -454,9 +498,9 @@ export default function MhtCetTestPage() {
 
   // Test View
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-background">
+    <div className="bg-background flex h-screen flex-col overflow-hidden">
       {/* Top Header Bar */}
-      <div className="border-b bg-card shadow-sm">
+      <div className="bg-card border-b shadow-sm">
         <div className="flex items-center justify-between px-3 py-3 sm:px-4">
           <div className="flex items-center gap-2 sm:gap-3">
             <Sheet open={isPaletteOpen} onOpenChange={setIsPaletteOpen}>
@@ -481,10 +525,12 @@ export default function MhtCetTestPage() {
                 </ScrollArea>
               </SheetContent>
             </Sheet>
-            
+
             <div>
-              <h1 className="text-sm font-bold sm:text-base md:text-lg">MHT CET Practice</h1>
-              <p className="text-xs text-muted-foreground">
+              <h1 className="text-sm font-bold sm:text-base md:text-lg">
+                MHT CET Practice
+              </h1>
+              <p className="text-muted-foreground text-xs">
                 Q {currentQuestionIndex + 1}/{mhtCetQuestions.length}
               </p>
             </div>
@@ -492,12 +538,16 @@ export default function MhtCetTestPage() {
 
           <div className="flex items-center gap-1.5 sm:gap-3">
             {/* Timer */}
-            <div className={cn(
-              "flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium transition-colors sm:gap-2 sm:px-3 sm:py-2 sm:text-sm",
-              timeRemaining < 300 ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
-              timeRemaining < 600 ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" :
-              "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-            )}>
+            <div
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium transition-colors sm:gap-2 sm:px-3 sm:py-2 sm:text-sm",
+                timeRemaining < 300
+                  ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                  : timeRemaining < 600
+                    ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                    : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+              )}
+            >
               <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="font-mono">{formatTime(timeRemaining)}</span>
             </div>
@@ -535,7 +585,7 @@ export default function MhtCetTestPage() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Desktop Question Palette Sidebar */}
-        <div className="hidden w-72 border-r bg-card lg:block xl:w-80">
+        <div className="bg-card hidden w-72 border-r lg:block xl:w-80">
           <ScrollArea className="h-full p-4">
             <QuestionPalette
               physicsQuestions={physicsQuestions}
@@ -545,7 +595,7 @@ export default function MhtCetTestPage() {
               getQuestionStatus={getQuestionStatus}
               goToQuestion={goToQuestion}
             />
-            
+
             {/* Submit Button - Desktop */}
             <Button
               onClick={handleSubmit}
@@ -570,7 +620,11 @@ export default function MhtCetTestPage() {
                       {currentQuestion.subject}
                     </Badge>
                     <Button
-                      variant={markedForReview[currentQuestion.id] ? "default" : "outline"}
+                      variant={
+                        markedForReview[currentQuestion.id]
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       onClick={() => toggleMarkForReview(currentQuestion.id)}
                       className="gap-1.5 text-xs sm:gap-2 sm:text-sm"
@@ -578,11 +632,13 @@ export default function MhtCetTestPage() {
                       <Bookmark
                         className={cn(
                           "h-3 w-3 sm:h-4 sm:w-4",
-                          markedForReview[currentQuestion.id] && "fill-current"
+                          markedForReview[currentQuestion.id] && "fill-current",
                         )}
                       />
                       <span className="hidden sm:inline">
-                        {markedForReview[currentQuestion.id] ? "Marked" : "Mark Review"}
+                        {markedForReview[currentQuestion.id]
+                          ? "Marked"
+                          : "Mark Review"}
                       </span>
                       <span className="sm:hidden">Mark</span>
                     </Button>
@@ -607,7 +663,7 @@ export default function MhtCetTestPage() {
                           "group relative flex items-start space-x-2.5 rounded-xl border-2 p-3 transition-all duration-200 sm:space-x-3 sm:p-4",
                           "hover:border-primary/50 hover:bg-primary/5 hover:shadow-md active:scale-[0.98]",
                           selectedAnswers[currentQuestion.id] === index &&
-                            "border-primary bg-primary/10 shadow-md"
+                            "border-primary bg-primary/10 shadow-md",
                         )}
                       >
                         <RadioGroupItem
@@ -633,7 +689,9 @@ export default function MhtCetTestPage() {
                       className="w-full gap-2 text-sm sm:text-base"
                     >
                       <Bot className="h-4 w-4" />
-                      {showHint[currentQuestion.id] ? "Hide AI Hint" : "Show AI Hint"}
+                      {showHint[currentQuestion.id]
+                        ? "Hide AI Hint"
+                        : "Show AI Hint"}
                     </Button>
 
                     {showHint[currentQuestion.id] && (
@@ -645,13 +703,51 @@ export default function MhtCetTestPage() {
                       </Alert>
                     )}
                   </div>
+
+                  {/* Navigation Buttons inside Question Card - Mobile Optimized */}
+                  <div className="space-y-3 border-t pt-4">
+                    {/* Question Counter */}
+                    <div className="text-center">
+                      <span className="text-muted-foreground text-sm font-medium sm:text-base">
+                        Question {currentQuestionIndex + 1} of{" "}
+                        {mhtCetQuestions.length}
+                      </span>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={goToPreviousQuestion}
+                        disabled={currentQuestionIndex === 0}
+                        className="h-11 gap-1.5 sm:h-10 sm:gap-2"
+                        size="default"
+                      >
+                        <ChevronLeft className="h-4 w-4 shrink-0" />
+                        <span className="truncate">Previous</span>
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        onClick={goToNextQuestion}
+                        disabled={
+                          currentQuestionIndex === mhtCetQuestions.length - 1
+                        }
+                        className="h-11 gap-1.5 sm:h-10 sm:gap-2"
+                        size="default"
+                      >
+                        <span className="truncate">Next</span>
+                        <ChevronRight className="h-4 w-4 shrink-0" />
+                      </Button>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </ScrollArea>
 
           {/* Bottom Navigation Bar */}
-          <div className="border-t bg-card p-3 shadow-lg sm:p-4">
+          <div className="bg-card border-t p-3 shadow-lg sm:p-4">
             <div className="container mx-auto flex max-w-3xl items-center justify-between gap-2 sm:gap-4">
               <Button
                 variant="outline"
@@ -666,7 +762,7 @@ export default function MhtCetTestPage() {
               </Button>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-muted-foreground sm:text-sm">
+                <span className="text-muted-foreground text-xs font-medium sm:text-sm">
                   {currentQuestionIndex + 1} / {mhtCetQuestions.length}
                 </span>
               </div>
@@ -683,7 +779,7 @@ export default function MhtCetTestPage() {
                   <span className="sm:hidden">Next</span>
                   <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
-                
+
                 {/* Submit Button - Mobile */}
                 <Button
                   onClick={handleSubmit}
@@ -721,7 +817,7 @@ function QuestionPalette({
   return (
     <div className="space-y-5">
       {/* Legend */}
-      <div className="rounded-lg bg-muted/50 p-3">
+      <div className="bg-muted/50 rounded-lg p-3">
         <h3 className="mb-3 text-xs font-semibold sm:text-sm">Status Legend</h3>
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="flex items-center gap-2">
@@ -763,7 +859,7 @@ function QuestionPalette({
                       ? "bg-red-500 text-white hover:bg-red-600"
                       : getQuestionStatus(question.id) === "marked"
                         ? "bg-purple-500 text-white hover:bg-purple-600"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300",
               )}
             >
               {question.id}
@@ -792,7 +888,7 @@ function QuestionPalette({
                       ? "bg-red-500 text-white hover:bg-red-600"
                       : getQuestionStatus(question.id) === "marked"
                         ? "bg-purple-500 text-white hover:bg-purple-600"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300",
               )}
             >
               {question.id}
@@ -821,7 +917,7 @@ function QuestionPalette({
                       ? "bg-red-500 text-white hover:bg-red-600"
                       : getQuestionStatus(question.id) === "marked"
                         ? "bg-purple-500 text-white hover:bg-purple-600"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300",
               )}
             >
               {question.id}
