@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import PageContainer from "@/components/layout/page-container";
-import { Heading } from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
@@ -15,7 +13,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { Loader2, Check, X } from "lucide-react";
+import {
+  IconCheck,
+  IconX,
+  IconLoader2,
+  IconShieldCheck,
+} from "@tabler/icons-react";
 
 declare global {
   interface Window {
@@ -135,220 +138,221 @@ export default function SubscriptionsPage() {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-start justify-between">
-          <Heading
-            title="Subscriptions & Payments"
-            description="Manage subscription plans and view payment history."
-          />
+      <div className="flex flex-1 flex-col space-y-6">
+        <div className="flex items-center justify-between space-y-2">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Subscriptions & Payments 💳
+            </h2>
+            <p className="text-muted-foreground">
+              Choose the perfect plan for your learning journey
+            </p>
+          </div>
         </div>
-        <Separator />
 
         {/* Subscription Plans */}
         {userRole === "STUDENT" && (
-          <>
-            <h3 className="text-lg font-semibold">Student Plans</h3>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Free Plan</CardTitle>
-                  <CardDescription>With advertisements</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4 text-3xl font-bold">₹0</div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Access to free tests
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Basic analytics
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Limited AI hints (3 per test)
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <X className="h-4 w-4 text-red-500" />
+          <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs md:grid-cols-2 lg:grid-cols-3">
+            <Card className="@container/card" data-slot="card">
+              <CardHeader>
+                <CardDescription>Free Plan</CardDescription>
+                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                  ₹0<span className="text-sm font-normal">/month</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="text-muted-foreground h-4 w-4 shrink-0" />
+                    <span>Access to free tests</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="text-muted-foreground h-4 w-4 shrink-0" />
+                    <span>Basic analytics</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="text-muted-foreground h-4 w-4 shrink-0" />
+                    <span>Limited AI hints (3 per test)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconX className="h-4 w-4 shrink-0 text-red-500" />
+                    <span className="text-muted-foreground">
                       Ad-supported experience
-                    </li>
-                  </ul>
-                  <Button variant="outline" className="mt-6 w-full" disabled>
-                    Current Plan
-                  </Button>
-                </CardContent>
-              </Card>
+                    </span>
+                  </li>
+                </ul>
+                <Button variant="outline" className="w-full" disabled>
+                  Current Plan
+                </Button>
+              </CardContent>
+            </Card>
 
-              <Card className="border-primary border-2 shadow-lg">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Ad-Free</CardTitle>
-                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-500">
-                      Popular
-                    </Badge>
-                  </div>
-                  <CardDescription>Student premium plan</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4">
-                    <span className="text-3xl font-bold">₹100</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      All free features
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      <strong>No advertisements</strong>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Unlimited AI hints
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Detailed performance reports
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Priority support
-                    </li>
-                  </ul>
-                  <Button
-                    className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-500"
-                    onClick={() => handleSubscribe("AD_FREE")}
-                    disabled={loading === "AD_FREE"}
-                  >
-                    {loading === "AD_FREE" ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      "Upgrade Now"
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </>
+            <Card
+              className="border-primary @container/card relative overflow-hidden border-2"
+              data-slot="card"
+            >
+              <div className="absolute top-0 right-0">
+                <Badge className="rounded-tr-none rounded-bl-lg">Popular</Badge>
+              </div>
+              <CardHeader>
+                <CardDescription>Ad-Free</CardDescription>
+                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                  ₹100<span className="text-sm font-normal">/month</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>All free features</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span className="font-medium">No advertisements</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Unlimited AI hints</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Detailed performance reports</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Priority support</span>
+                  </li>
+                </ul>
+                <Button
+                  className="w-full"
+                  onClick={() => handleSubscribe("AD_FREE")}
+                  disabled={loading === "AD_FREE"}
+                >
+                  {loading === "AD_FREE" ? (
+                    <>
+                      <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Upgrade Now"
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {userRole === "ORGANIZATION" && (
-          <>
-            <h3 className="text-lg font-semibold">Organization Plans</h3>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Free Plan</CardTitle>
-                  <CardDescription>Limited features</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4 text-3xl font-bold">₹0</div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Up to 10 students
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Basic analytics
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <X className="h-4 w-4 text-red-500" />
+          <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs md:grid-cols-2 lg:grid-cols-3">
+            <Card className="@container/card" data-slot="card">
+              <CardHeader>
+                <CardDescription>Free Plan</CardDescription>
+                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                  ₹0<span className="text-sm font-normal">/month</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="text-muted-foreground h-4 w-4 shrink-0" />
+                    <span>Up to 10 students</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="text-muted-foreground h-4 w-4 shrink-0" />
+                    <span>Basic analytics</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconX className="h-4 w-4 shrink-0 text-red-500" />
+                    <span className="text-muted-foreground">
                       No test creation
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <X className="h-4 w-4 text-red-500" />
-                      Ad-supported
-                    </li>
-                  </ul>
-                  <Button variant="outline" className="mt-6 w-full" disabled>
-                    Current Plan
-                  </Button>
-                </CardContent>
-              </Card>
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconX className="h-4 w-4 shrink-0 text-red-500" />
+                    <span className="text-muted-foreground">Ad-supported</span>
+                  </li>
+                </ul>
+                <Button variant="outline" className="w-full" disabled>
+                  Current Plan
+                </Button>
+              </CardContent>
+            </Card>
 
-              <Card className="border-primary border-2 shadow-lg">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Organization Pro</CardTitle>
-                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-500">
-                      Best Value
-                    </Badge>
-                  </div>
-                  <CardDescription>Complete coaching solution</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4">
-                    <span className="text-3xl font-bold">₹5,000</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      <strong>Unlimited students</strong>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Create custom tests
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Question bank management
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Batch & student management
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Advanced analytics & reports
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Custom branding
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      Priority support
-                    </li>
-                  </ul>
-                  <Button
-                    className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-500"
-                    onClick={() => handleSubscribe("ORGANIZATION")}
-                    disabled={loading === "ORGANIZATION"}
-                  >
-                    {loading === "ORGANIZATION" ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      "Upgrade Now"
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </>
+            <Card
+              className="border-primary @container/card relative overflow-hidden border-2"
+              data-slot="card"
+            >
+              <div className="absolute top-0 right-0">
+                <Badge className="rounded-tr-none rounded-bl-lg">
+                  Best Value
+                </Badge>
+              </div>
+              <CardHeader>
+                <CardDescription>Organization Pro</CardDescription>
+                <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                  ₹5,000<span className="text-sm font-normal">/month</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span className="font-medium">Unlimited students</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Create custom tests</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Question bank management</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Batch & student management</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Advanced analytics & reports</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Custom branding</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <IconCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+                    <span>Priority support</span>
+                  </li>
+                </ul>
+                <Button
+                  className="w-full"
+                  onClick={() => handleSubscribe("ORGANIZATION")}
+                  disabled={loading === "ORGANIZATION"}
+                >
+                  {loading === "ORGANIZATION" ? (
+                    <>
+                      <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Upgrade Now"
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Payment Information */}
-        <Card className="mt-6 border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
+        <Card className="border-primary/20 bg-primary/5" data-slot="card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22.436 0H1.564C.7.02.02.7 0 1.564v20.872c.02.864.7 1.544 1.564 1.564h20.872c.864-.02 1.544-.7 1.564-1.564V1.564C23.98.7 23.3.02 22.436 0zM7.303 14.365H4.697V9.635h2.606v4.73zm11.394 0h-2.606v-1.938c0-.694-.012-1.588-.968-1.588-.97 0-1.118.757-1.118 1.538v1.988H11.4V9.635h2.5v.647h.035c.348-.66 1.198-1.353 2.465-1.353 2.638 0 3.125 1.736 3.125 3.992v1.444z" />
-              </svg>
+              <IconShieldCheck className="h-5 w-5" />
               Secure Payments by Razorpay
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-blue-900 dark:text-blue-100">
+            <p className="text-muted-foreground text-sm">
               All payments are processed securely through Razorpay. We support
               UPI, Credit/Debit Cards, Net Banking, and digital Wallets. Your
               payment information is encrypted and secure.
@@ -357,7 +361,7 @@ export default function SubscriptionsPage() {
         </Card>
 
         {/* Payment History */}
-        <Card className="mt-4">
+        <Card data-slot="card">
           <CardHeader>
             <CardTitle>Payment History</CardTitle>
             <CardDescription>
