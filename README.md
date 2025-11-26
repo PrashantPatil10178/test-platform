@@ -1,29 +1,126 @@
-# Create T3 App
+# MHT CET Prep
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+**Master MHT CET with AI-Powered Learning** 🚀
 
-## What's next? How do I make an app with this?
+Visit us at [mhtcet.app](https://mhtcet.app)
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## About
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+MHT CET Prep is an AI-powered preparation platform designed to help engineering aspirants excel in the Maharashtra Common Entrance Test (MHT CET). Our platform combines personalized learning paths, adaptive testing, and real-time performance analytics to transform your preparation experience.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### Key Features
 
-## Learn More
+- 🤖 **AI-Powered Learning**: Personalized study plans that adapt to your learning style
+- 🎯 **Precision Testing**: Targeted questions based on your weak areas
+- 📊 **Advanced Analytics**: Comprehensive performance tracking with detailed insights
+- 📚 **Rich Content Library**: 50,000+ questions with detailed solutions
+- 🏆 **Achievement System**: Gamified learning experience with badges and streaks
+- 👥 **Community Support**: Connect with educators and successful alumni
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Tech Stack
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+This project is built with the [T3 Stack](https://create.t3.gg/):
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- [Next.js 15](https://nextjs.org) - React framework with App Router
+- [NextAuth.js](https://next-auth.js.org) - Authentication
+- [Prisma](https://prisma.io) - ORM for database management
+- [tRPC](https://trpc.io) - End-to-end typesafe APIs
+- [Tailwind CSS](https://tailwindcss.com) - Styling
+- [Tabler Icons](https://tabler.io/icons) - Icon library
+- [Razorpay](https://razorpay.com) - Payment processing
 
-## How do I deploy this?
+## Getting Started
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+### Prerequisites
+
+- Node.js 18+ or Bun
+- PostgreSQL database
+- Razorpay account for payments
+- Google OAuth credentials (optional)
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/mhtcet-prep.git
+cd mhtcet-prep
+```
+
+2. Install dependencies:
+
+```bash
+pnpm install
+# or
+bun install
+```
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory with the following variables:
+
+```env
+DATABASE_URL="postgresql://..."
+AUTH_SECRET="your-auth-secret"
+AUTH_GOOGLE_ID="your-google-client-id"
+AUTH_GOOGLE_SECRET="your-google-client-secret"
+RAZORPAY_KEY_ID="your-razorpay-key-id"
+RAZORPAY_KEY_SECRET="your-razorpay-key-secret"
+NEXT_PUBLIC_RAZORPAY_KEY_ID="your-razorpay-key-id"
+```
+
+4. Set up the database:
+
+```bash
+pnpm db:push
+pnpm db:seed
+```
+
+5. Run the development server:
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Available Scripts
+
+- `pnpm dev` - Start development server with Turbopack
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint
+- `pnpm format:write` - Format code with Prettier
+- `pnpm db:studio` - Open Prisma Studio
+- `pnpm db:push` - Push schema changes to database
+- `pnpm db:seed` - Seed the database
+
+## Project Structure
+
+```
+src/
+├── app/              # Next.js App Router pages
+├── components/       # React components
+├── server/          # Server-side code (API, auth)
+├── lib/             # Utility functions
+├── hooks/           # Custom React hooks
+├── styles/          # Global styles
+└── trpc/            # tRPC configuration
+```
+
+## Deployment
+
+This application can be deployed on:
+
+- [Vercel](https://vercel.com) (recommended)
+- [Netlify](https://netlify.com)
+- [Docker](https://docker.com)
+
+For detailed deployment instructions, see the [T3 Stack deployment guides](https://create.t3.gg/en/deployment/vercel).
+
+## License
+
+© 2025 MHT CET Prep. All rights reserved.
+
+## Support
+
+For support, email support@mhtcet.app or visit our website at [mhtcet.app](https://mhtcet.app).

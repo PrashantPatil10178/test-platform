@@ -76,7 +76,7 @@ export default function SubscriptionsPage() {
         key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "Test Platform",
+        name: "MHT CET Prep",
         description: plan === "AD_FREE" ? "Ad-Free Plan" : "Organization Plan",
         order_id: orderData.orderId,
         handler: async function (response: any) {

@@ -17,8 +17,9 @@ const META_THEME_COLORS = {
 };
 
 export const metadata: Metadata = {
-  title: "Test Platform",
-  description: "A platform to test your knowledge and skills.",
+  title: "MHT CET Prep - Master MHT CET with AI-Powered Learning",
+  description:
+    "Transform your MHT CET preparation with personalized learning paths, adaptive testing, and real-time performance analytics at mhtcet.app",
 };
 
 export const viewport: Viewport = {

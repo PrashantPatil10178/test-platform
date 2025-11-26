@@ -47,12 +47,12 @@ import * as React from "react";
 import { Icons } from "../icons";
 import { OrgSwitcher } from "../org-switcher";
 export const company = {
-  name: "Acme Inc",
+  name: "MHT CET Prep",
   logo: IconPhotoUp,
   plan: "Enterprise",
 };
 
-const tenants = [{ id: "1", name: "Acme Inc" }];
+const tenants = [{ id: "1", name: "MHT CET Prep" }];
 
 export default function AppSidebar() {
   const pathname = usePathname();
