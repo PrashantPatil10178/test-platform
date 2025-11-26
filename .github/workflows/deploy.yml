@@ -1,0 +1,149 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+  APP_NAME: "mhtcet-prep"
+  APP_DIR: "/home/ubuntu/mhtcet-prep"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          SKIP_ENV_VALIDATION: true
+
+      - name: Generate Prisma Client
+        run: pnpm postinstall
+        env:
+          SKIP_ENV_VALIDATION: true
+
+      - name: Build application
+        run: pnpm build
+        env:
+          SKIP_ENV_VALIDATION: true
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          AUTH_DISCORD_ID: ${{ secrets.AUTH_DISCORD_ID }}
+          AUTH_DISCORD_SECRET: ${{ secrets.AUTH_DISCORD_SECRET }}
+          AUTH_GOOGLE_ID: ${{ secrets.AUTH_GOOGLE_ID }}
+          AUTH_GOOGLE_SECRET: ${{ secrets.AUTH_GOOGLE_SECRET }}
+          RAZORPAY_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
+          RAZORPAY_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
+          NEXT_PUBLIC_RAZORPAY_KEY_ID: ${{ secrets.NEXT_PUBLIC_RAZORPAY_KEY_ID }}
+
+      - name: Create deployment package
+        run: |
+          tar -czvf deploy.tar.gz \
+            .next \
+            public \
+            prisma \
+            package.json \
+            pnpm-lock.yaml \
+            next.config.js \
+            ecosystem.config.cjs
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          source: "deploy.tar.gz"
+          target: "/tmp"
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            set -e
+
+            APP_DIR="/home/ubuntu/mhtcet-prep"
+
+            # Create directory if it doesn't exist
+            mkdir -p $APP_DIR
+            cd $APP_DIR
+
+            # Clone or pull latest code from repo
+            if [ -d ".git" ]; then
+              echo "Pulling latest changes..."
+              git fetch origin main
+              git reset --hard origin/main
+            else
+              echo "Cloning repository..."
+              git clone https://github.com/PrashantPatil10178/test-platform.git .
+            fi
+
+            # Extract build artifacts (overwrites .next, public, etc.)
+            tar -xzvf /tmp/deploy.tar.gz
+
+            # Install production dependencies
+            pnpm install --prod --frozen-lockfile
+
+            # Run database migrations
+            pnpm db:migrate
+
+            # Restart PM2 process
+            pm2 reload mhtcet-prep || pm2 start ecosystem.config.cjs --env production
+            pm2 save
+
+            # Cleanup
+            rm -f /tmp/deploy.tar.gz
+
+            echo "✅ Deployment completed successfully!"
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            sleep 5
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:3050 | grep -qE "200|301|302"; then
+              echo "✅ Application is healthy!"
+            else
+              echo "❌ Health check failed!"
+              pm2 logs mhtcet-prep --lines 20
+              exit 1
+            fi
