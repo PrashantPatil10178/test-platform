@@ -4,10 +4,18 @@ import { db } from "@/server/db";
 import Razorpay from "razorpay";
 import { env } from "@/env";
 
-const razorpay = new Razorpay({
-  key_id: env.RAZORPAY_KEY_ID,
-  key_secret: env.RAZORPAY_KEY_SECRET,
-});
+// Lazy initialization to prevent build-time errors when keys are not set
+let razorpayInstance: Razorpay | null = null;
+
+function getRazorpay(): Razorpay {
+  if (!razorpayInstance) {
+    razorpayInstance = new Razorpay({
+      key_id: env.RAZORPAY_KEY_ID,
+      key_secret: env.RAZORPAY_KEY_SECRET,
+    });
+  }
+  return razorpayInstance;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,7 +50,7 @@ export async function POST(req: NextRequest) {
       },
     };
 
-    const order = await razorpay.orders.create(options);
+    const order = await getRazorpay().orders.create(options);
 
     // Save order to database
     await db.order.create({
