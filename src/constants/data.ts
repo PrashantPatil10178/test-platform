@@ -31,8 +31,16 @@ export const studentNavItems: NavItem[] = [
     items: [],
   },
   {
+    title: "Custom Practice",
+    url: "/dashboard/student/practice",
+    icon: "laptop",
+    shortcut: ["c", "p"],
+    isActive: false,
+    items: [],
+  },
+  {
     title: "Test History",
-    url: "/dashboard/history",
+    url: "/dashboard/test-history",
     icon: "clock",
     shortcut: ["h", "h"],
     isActive: false,

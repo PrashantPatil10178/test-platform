@@ -6,6 +6,8 @@ import { organizationRouter } from "@/server/api/routers/organization";
 import { testRouter } from "@/server/api/routers/test";
 import { questionRouter } from "@/server/api/routers/question";
 import { analyticsRouter } from "@/server/api/routers/analytics";
+import { contentRouter } from "@/server/api/routers/content";
+import { examRouter } from "@/server/api/routers/exam";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -20,8 +22,10 @@ export const appRouter = createTRPCRouter({
   payment: paymentRouter,
   organization: organizationRouter,
   test: testRouter,
+  exam: examRouter,
   question: questionRouter,
   analytics: analyticsRouter,
+  content: contentRouter,
 });
 
 // export type definition of API

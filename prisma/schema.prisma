@@ -400,6 +400,7 @@ model Question {
   chapter         Chapter    @relation(fields: [chapterId], references: [id])
   
   // Question Content
+  class           Int        @default(12) // 11 or 12
   questionText    String     // Main question text
   questionImage   String?    // Optional image URL
   option1         String
