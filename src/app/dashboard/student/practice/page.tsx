@@ -403,7 +403,7 @@ export default function PracticeTestPage() {
                       </div>
                       <Slider
                         value={[questionCount]}
-                        onValueChange={(v) => setQuestionCount(v[0])}
+                        onValueChange={(v) => setQuestionCount(v[0] ?? 5)}
                         min={5}
                         max={50}
                         step={5}
