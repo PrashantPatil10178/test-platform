@@ -58,8 +58,9 @@ export default function DisclaimerPage() {
                   questions, mock tests, study materials, and analytics, is
                   designed to assist students in their preparation for the MHT
                   CET examination. However, we do not guarantee specific results
-                  or outcomes. Success in examinations depends on various factors
-                  including individual effort, aptitude, and preparation time.
+                  or outcomes. Success in examinations depends on various
+                  factors including individual effort, aptitude, and preparation
+                  time.
                 </p>
               </section>
 
@@ -131,8 +132,8 @@ export default function DisclaimerPage() {
                   The information on this Site is provided for educational
                   purposes only and should not be construed as professional
                   advice. You should not act or refrain from acting on the basis
-                  of any content included on the Site without seeking appropriate
-                  professional advice.
+                  of any content included on the Site without seeking
+                  appropriate professional advice.
                 </p>
               </section>
 
