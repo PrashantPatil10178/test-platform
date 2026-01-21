@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 import { ProfileAvatar } from "@/components/profile-avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { LandingHeader } from "@/components/layout/landing-header";
+import { LandingFooter } from "@/components/layout/landing-footer";
 
 // Utility for conditional classes
 const cn = (...classes: (string | undefined)[]) =>
@@ -55,74 +57,7 @@ export default async function Home() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
           </div>
 
-          {/* Header */}
-          <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-white/50 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20 dark:border-white/5 dark:bg-black/20">
-            <div className="container mx-auto px-4 md:px-6">
-              <div className="flex h-16 items-center justify-between">
-                <Link
-                  href="/"
-                  className="flex items-center space-x-2 transition-opacity hover:opacity-80"
-                >
-                  <div className="bg-primary/10 flex h-9 w-9 items-center justify-center rounded-lg">
-                    <IconBrain className="text-primary h-5 w-5" />
-                  </div>
-                  <span className="text-xl font-bold tracking-tight">
-                    MHT CET Prep
-                  </span>
-                </Link>
-
-                <nav className="hidden items-center space-x-6 md:flex">
-                  {[
-                    { name: "Features", href: "#features" },
-                    { name: "Success Stories", href: "#testimonials" },
-                    { name: "Pricing", href: "#pricing" },
-                  ].map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </nav>
-
-                <div className="flex items-center space-x-4">
-                  {session ? (
-                    <div className="flex items-center space-x-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        asChild
-                        className="hidden sm:flex"
-                      >
-                        <Link href="/dashboard">Dashboard</Link>
-                      </Button>
-                      <ProfileAvatar user={session.user} />
-                    </div>
-                  ) : (
-                    <>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="bg-slate-200"
-                        asChild
-                      >
-                        <Link href="/signin">Log in</Link>
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/20 transition-all hover:scale-105 hover:shadow-blue-500/40"
-                        asChild
-                      >
-                        <Link href="/signup">Get Started</Link>
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </header>
+          <LandingHeader />
 
           <main className="relative z-10 pt-24">
             {/* Hero Section */}
@@ -614,82 +549,7 @@ export default async function Home() {
           </main>
 
           {/* Footer */}
-          <footer className="bg-muted/30 border-t py-12 text-sm">
-            <div className="container mx-auto px-4 md:px-6">
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-                <div>
-                  <div className="mb-4 flex items-center gap-2 text-lg font-bold">
-                    <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg border border-blue-500/20">
-                      <Brain className="text-primary h-4 w-4" />
-                    </div>
-                    MHT CET Prep
-                  </div>
-                  <p className="text-muted-foreground mb-4 max-w-xs">
-                    Empowering students with data-driven preparation strategies
-                    for a brighter engineering future.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="mb-4 font-semibold">Product</h3>
-                  <ul className="text-muted-foreground space-y-2">
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        Features
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        Pricing
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        Success Stories
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="mb-4 font-semibold">Resources</h3>
-                  <ul className="text-muted-foreground space-y-2">
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        Blog
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        CET Syllabus
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        Cut-off Lists
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="mb-4 font-semibold">Legal</h3>
-                  <ul className="text-muted-foreground space-y-2">
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        Privacy Policy
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="#" className="hover:text-foreground">
-                        Terms of Service
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="text-muted-foreground mt-12 border-t pt-8 text-center">
-                <p>&copy; 2025 MHT CET Prep. All rights reserved.</p>
-              </div>
-            </div>
-          </footer>
+          <LandingFooter />
         </div>
       </ScrollArea>
     </HydrateClient>
