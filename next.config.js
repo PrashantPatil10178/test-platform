@@ -16,6 +16,14 @@ const config = {
     // your project has TypeScript errors.
     ignoreBuildErrors: true,
   },
+  webpack: (config) => {
+    config.ignoreWarnings = [
+      { module: /node_modules\/@opentelemetry-instrumentation/ },
+      { module: /node_modules\/@opentelemetry\/instrumentation/ },
+      { module: /node_modules\/require-in-the-middle/ },
+    ];
+    return config;
+  },
 };
 
 export default config;

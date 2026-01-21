@@ -10,6 +10,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 import "./theme.css";
 import { Geist } from "next/font/google";
+import Script from "next/script";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -64,6 +65,12 @@ export default async function RootLayout({
         )}
       >
         <NextTopLoader color="var(--primary)" showSpinner={false} />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6873000234871999"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"
