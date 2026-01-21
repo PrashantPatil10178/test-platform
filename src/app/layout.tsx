@@ -21,6 +21,55 @@ export const metadata: Metadata = {
   title: "MHT CET Prep - Master MHT CET with AI-Powered Learning",
   description:
     "Transform your MHT CET preparation with personalized learning paths, adaptive testing, and real-time performance analytics at mhtcet.app",
+  keywords: [
+    "MHT CET",
+    "engineering entrance exam",
+    "Maharashtra CET",
+    "exam preparation",
+    "online learning",
+    "adaptive testing",
+    "physics preparation",
+    "chemistry preparation",
+    "mathematics preparation",
+    "mock tests",
+    "AI learning",
+  ],
+  authors: [{ name: "MHT CET Prep Team" }],
+  creator: "MHT CET Prep",
+  publisher: "MHT CET Prep",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "ca-pub-6873000234871999",
+  },
+  metadataBase: new URL("https://mhtcet.app"),
+  alternates: {
+    canonical: "https://mhtcet.app",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://mhtcet.app",
+    siteName: "MHT CET Prep",
+    title: "MHT CET Prep - Master MHT CET with AI-Powered Learning",
+    description:
+      "Transform your MHT CET preparation with personalized learning paths, adaptive testing, and real-time performance analytics",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MHT CET Prep - Master MHT CET with AI-Powered Learning",
+    description:
+      "Transform your MHT CET preparation with personalized learning paths, adaptive testing, and real-time performance analytics",
+  },
   other: {
     "google-adsense-account": "ca-pub-6873000234871999",
   },

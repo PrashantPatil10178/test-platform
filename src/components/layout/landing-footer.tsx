@@ -74,6 +74,11 @@ export function LandingFooter() {
                   Cookie Policy
                 </Link>
               </li>
+              <li>
+                <Link href="/disclaimer" className="hover:text-foreground">
+                  Disclaimer
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
