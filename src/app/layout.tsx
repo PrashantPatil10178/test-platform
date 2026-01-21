@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   title: "MHT CET Prep - Master MHT CET with AI-Powered Learning",
   description:
     "Transform your MHT CET preparation with personalized learning paths, adaptive testing, and real-time performance analytics at mhtcet.app",
+  other: {
+    "google-adsense-account": "ca-pub-6873000234871999",
+  },
 };
 
 export const viewport: Viewport = {
